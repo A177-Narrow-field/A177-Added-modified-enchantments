@@ -1,0 +1,38 @@
+# IDE files
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Build files
+build/
+out/
+
+# Gradle files
+.gradle/
+gradle.properties
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Minecraft mod specific
+run/
+run-data/
+
+# Generated files
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.tgz
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+
+# Local configuration files
+local.properties

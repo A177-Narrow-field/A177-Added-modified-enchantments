@@ -1,0 +1,7 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "a177_added_modified_enchantments:block/hardened_lava_block",
+    "particle": "a177_added_modified_enchantments:block/hardened_lava_block"
+  }
+}

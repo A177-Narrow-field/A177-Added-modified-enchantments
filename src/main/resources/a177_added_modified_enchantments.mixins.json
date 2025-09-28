@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "A177_Enchanted.a177_added_modified_enchantments.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "a177_added_modified_enchantments.refmap.json",
+  "mixins": [
+    "FireProtectionItemMixin",
+    "PlayerHarvestMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
