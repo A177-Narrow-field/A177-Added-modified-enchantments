@@ -30,10 +30,14 @@ public class AllEnchantmentsConfig {
     public static final EnchantConfig ADVANCED_TIME_AXIS_MENDING;
     public static final EnchantConfig PRIMITIVE_TIME_AXIS_MENDING;
     public static final EnchantConfig PRIMITIVE_MENDING;
+    
+    // 定义矿探附魔的配置项
+    public static final EnchantConfig ORE_DETECTOR;
     public static final EnchantConfig STOMACH_POUCH;
     public static final EnchantConfig GLUTTONOUS_POUCH;
     public static final EnchantConfig LAVA_WALKER;
     public static final EnchantConfig SHADOW_WALKER;
+    public static final EnchantConfig LIGHTBURN_WALKER;
     public static final EnchantConfig METEORITE_STOMP;
     public static final EnchantConfig CLOUD_WALKER;
     public static final EnchantConfig HIGH_STEP;
@@ -627,6 +631,14 @@ public class AllEnchantmentsConfig {
                 false, true, false);
         ENCHANTMENTS.put("gluttonous_pouch", GLUTTONOUS_POUCH);
         
+        // 矿探附魔配置
+        BUILDER.comment("矿探附魔配置").push("ore_detector_enchantments");
+        
+        // 矿探附魔配置 - 是宝藏，不可发现，不可交易
+        ORE_DETECTOR = createEnchantConfig("ore_detector", "矿探",
+                true, false, false);
+        ENCHANTMENTS.put("ore_detector", ORE_DETECTOR);
+        
         // 行走类附魔配置
         BUILDER.comment("行走类附魔配置").push("walker_enchantments");
         
@@ -637,6 +649,10 @@ public class AllEnchantmentsConfig {
         SHADOW_WALKER = createEnchantConfig("shadow_walker", "暗影急行",
                 false, true, true);
         ENCHANTMENTS.put("shadow_walker", SHADOW_WALKER);
+        
+        LIGHTBURN_WALKER = createEnchantConfig("lightburn_walker", "光灼行者",
+                false, true, true);
+        ENCHANTMENTS.put("lightburn_walker", LIGHTBURN_WALKER);
         
         // 踏地类附魔配置
         BUILDER.comment("踏地类附魔配置").push("stomp_enchantments");

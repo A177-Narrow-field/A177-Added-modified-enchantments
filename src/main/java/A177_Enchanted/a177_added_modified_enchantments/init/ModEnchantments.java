@@ -70,6 +70,7 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> PRIMITIVE_TIME_AXIS_MENDING = ENCHANTMENTS.register("primitive_time_axis_mending", PrimitiveTimeAxisMendingEnchantment::new);//初级时轴修补
     public static final RegistryObject<Enchantment> HIGH_STEP = ENCHANTMENTS.register("high_step", HighStepEnchantment::new);//高跨
     public static final RegistryObject<Enchantment> SHADOW_WALKER = ENCHANTMENTS.register("shadow_walker", ShadowWalkerEnchantment::new);//暗影行者
+    public static final RegistryObject<Enchantment> LIGHTBURN_WALKER = ENCHANTMENTS.register("lightburn_walker", LightburnWalkerEnchantment::new);//光灼行者
     public static final RegistryObject<Enchantment> CLOUD_WALKER = ENCHANTMENTS.register("cloud_walker", CloudWalkerEnchantment::new);//踏云
     public static final RegistryObject<Enchantment> LOW_DAMAGE_CRITICAL = ENCHANTMENTS.register("low_damage_critical", LowDamageCriticalEnchantment::new);//低伤暴击
     public static final RegistryObject<Enchantment> CRITICAL_OVERCLOCK = ENCHANTMENTS.register("critical_overclock", CriticalOverclockEnchantment::new);//超频暴击
@@ -181,7 +182,7 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> SHIELD_SHOCK = ENCHANTMENTS.register("shield_shock", ShieldShockEnchantment::new);//盾震
     public static final RegistryObject<Enchantment> HATRED_TAUNT = ENCHANTMENTS.register("hatred_taunt", HatredTauntEnchantment::new);//仇引
     public static final RegistryObject<Enchantment> HOVER = ENCHANTMENTS.register("hover", HoverEnchantment::new);//氧力悬停
-    public static final RegistryObject<Enchantment> TAUNT_EXCITEMENT = ENCHANTMENTS.register("taunt_excitement", TauntExcitementEnchantment::new);//诱敌兴奋
+    public static final RegistryObject<Enchantment> TAUNT_EXCITEMENT = ENCHANTMENTS.register("taunt_excitement", TauntExcitementEnchantment::new);//敌速追行
     public static final RegistryObject<Enchantment> NOISY_SOUND = ENCHANTMENTS.register("noisy_sound", NoisySoundEnchantment::new);//音躁
     public static final RegistryObject<Enchantment> SOUL_REAPING_SICKLE = ENCHANTMENTS.register("soul_reaping_sickle", SoulReapingSickleEnchantment::new);//祭魂镰斩
     public static final RegistryObject<Enchantment> SOUL_PAYING_CUT = ENCHANTMENTS.register("soul_paying_cut", SoulPayingCutEnchantment::new);//付魂斩
@@ -239,4 +240,5 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> TRANSFER = ENCHANTMENTS.register("transfer", TransferEnchantment::new);// 传输
     public static final RegistryObject<Enchantment> ARMY_SUMMON = ENCHANTMENTS.register("army_summon", ArmySummonEnchantment::new);// 召军
     public static final RegistryObject<Enchantment> ELYTRA_ARMOR = ENCHANTMENTS.register("elytra_armor", ElytraArmorEnchantment::new);// 翅韧战甲
+    public static final RegistryObject<Enchantment> ORE_DETECTOR = ENCHANTMENTS.register("ore_detector", OreDetectorEnchantment::new);// 矿探
 }

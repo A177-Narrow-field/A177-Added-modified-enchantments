@@ -11,6 +11,7 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -81,8 +82,10 @@ public class TillageBootEnchantment extends Enchantment {
 
     @Override
     protected boolean checkCompatibility(Enchantment enchantment) {
-        // 与除草附魔冲突
-        return super.checkCompatibility(enchantment) && enchantment != ModEnchantments.WEED_REMOVAL_BOOT.get();
+        // 与除草附魔和作物收获附魔冲突
+        return super.checkCompatibility(enchantment) 
+            && enchantment != ModEnchantments.WEED_REMOVAL_BOOT.get()
+            && enchantment != ModEnchantments.CROP_HARVEST.get();
     }
 
     @SubscribeEvent
@@ -168,6 +171,11 @@ public class TillageBootEnchantment extends Enchantment {
         Level level = player.level();
         int range = TillageBootConfig.range.get();
 
+        // 获取玩家手持的工具
+        ItemStack heldItem = player.getMainHandItem();
+        // 获取时运附魔等级
+        int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, heldItem);
+
         // 定义工作区域
         for (int x = -range; x <= range; x++) {
             for (int y = -range; y <= range; y++) {
@@ -177,8 +185,8 @@ public class TillageBootEnchantment extends Enchantment {
 
                     // 破坏农作物方块（无视成熟度）
                     if (checkBlockState.getBlock() instanceof CropBlock) {
-                        // 收获农作物
-                        Block.dropResources(checkBlockState, level, checkPos);
+                        // 收获农作物，考虑时运附魔
+                        Block.dropResources(checkBlockState, level, checkPos, null, player, heldItem);
                         level.destroyBlock(checkPos, false);
                     }
                 }
@@ -216,6 +224,12 @@ public class TillageBootEnchantment extends Enchantment {
         // 获取配置的范围值
         int range = TillageBootConfig.range.get();
 
+        // 获取玩家手持的工具（用于时运附魔）
+        ItemStack heldItem = player.getMainHandItem();
+        if (!(heldItem.getItem() instanceof HoeItem)) {
+            heldItem = player.getOffhandItem();
+        }
+
         // 定义工作区域
         for (int x = -range; x <= range; x++) {
             for (int z = -range; z <= range; z++) {
@@ -228,8 +242,8 @@ public class TillageBootEnchantment extends Enchantment {
                     if (checkBlockState.getBlock() instanceof CropBlock cropBlock) {
                         // 检查农作物是否成熟
                         if (cropBlock.isMaxAge(checkBlockState)) {
-                            // 收获农作物
-                            Block.dropResources(checkBlockState, level, checkPos);
+                            // 收获农作物，考虑时运附魔
+                            Block.dropResources(checkBlockState, level, checkPos, null, player, heldItem);
                             level.destroyBlock(checkPos, false);
                         }
                     }

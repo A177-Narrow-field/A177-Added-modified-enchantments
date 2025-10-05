@@ -30,12 +30,15 @@ import org.slf4j.Logger;
 import A177_Enchanted.a177_added_modified_enchantments.init.ModBlocks;
 import A177_Enchanted.a177_added_modified_enchantments.init.ModEnchantments;
 import A177_Enchanted.a177_added_modified_enchantments.init.ModItems;
+import A177_Enchanted.a177_added_modified_enchantments.init.ModEntities;
 import A177_Enchanted.a177_added_modified_enchantments.config.CropHarvestConfig;
 import A177_Enchanted.a177_added_modified_enchantments.config.RangeFootBlockConfig;
 import A177_Enchanted.a177_added_modified_enchantments.config.WeedRemovalConfig;
 import A177_Enchanted.a177_added_modified_enchantments.config.CoreCollectionConfig;
 import A177_Enchanted.a177_added_modified_enchantments.config.TransferConfig;
 import A177_Enchanted.a177_added_modified_enchantments.config.AllEnchantmentsConfig;
+import A177_Enchanted.a177_added_modified_enchantments.config.OreDetectorConfig; // 添加OreDetectorConfig导入
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent; // 添加属性事件导入
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(A177_added_modified_enchantments.MODID)
@@ -61,7 +64,6 @@ public class A177_added_modified_enchantments {
         // 尽管FMLJavaModLoadingContext.get()被标记为弃用，但在当前版本中仍可使用
         this(FMLJavaModLoadingContext.get().getModEventBus());
     }
-
     public A177_added_modified_enchantments(IEventBus modEventBus) {
         // Register the commonSetup method for modloading
         modEventBus.addListener(this::commonSetup);
@@ -76,6 +78,11 @@ public class A177_added_modified_enchantments {
         ModBlocks.BLOCKS.register(modEventBus);
         // Register the Deferred Register to the mod event bus so custom items get registered
         ModItems.ITEMS.register(modEventBus);
+        // Register the Deferred Register to the mod event bus so entities get registered
+        ModEntities.ENTITIES.register(modEventBus);
+
+        // Register entity attributes
+        modEventBus.addListener(this::addEntityAttributes);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -95,6 +102,8 @@ public class A177_added_modified_enchantments {
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TransferConfig.SPEC, "transfer_config.toml");
         // Register fist enchantment config with a specific filename to avoid conflicts
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AllEnchantmentsConfig.SPEC, "all_enchantments_config.toml");
+        // Register ore detector enchantment config with a specific filename to avoid conflicts
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, OreDetectorConfig.SPEC, "ore_detector_config.toml");
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
@@ -108,12 +117,21 @@ public class A177_added_modified_enchantments {
 
         // Register crop harvest config
         CropHarvestConfig.registerConfigs();
-        
+
         // Reload weed removal config to ensure it's properly loaded
         A177_Enchanted.a177_added_modified_enchantments.enchantments.WeedRemovalBootEnchantment.reloadConfig();
-        
+
         // Reload core collection config to ensure it's properly loaded
         A177_Enchanted.a177_added_modified_enchantments.enchantments.CoreCollectionEnchantment.reloadConfig();
+
+        // Reload ore detector config to ensure it's properly loaded
+        A177_Enchanted.a177_added_modified_enchantments.enchantments.OreDetectorEnchantment.reloadConfig();
+    }
+
+    // 添加实体属性
+    private void addEntityAttributes(EntityAttributeCreationEvent event) {
+        event.put(ModEntities.ORE_HIGHLIGHT.get(), 
+                  A177_Enchanted.a177_added_modified_enchantments.entity.OreHighlightEntity.createAttributes().build());
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
