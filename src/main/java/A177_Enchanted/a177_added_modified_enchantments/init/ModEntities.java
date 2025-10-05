@@ -15,7 +15,7 @@ public class ModEntities {
     // 矿石高亮实体注册
     public static final RegistryObject<EntityType<OreHighlightEntity>> ORE_HIGHLIGHT = ENTITIES.register("ore_highlight", 
             () -> EntityType.Builder.of((EntityType.EntityFactory<OreHighlightEntity>) OreHighlightEntity::new, MobCategory.MISC)
-                    .sized(0.9f, 0.9f)
+                    .sized(0.9f, 0.f)
                     .clientTrackingRange(10)
                     .updateInterval(Integer.MAX_VALUE)
                     .build("ore_highlight"));
