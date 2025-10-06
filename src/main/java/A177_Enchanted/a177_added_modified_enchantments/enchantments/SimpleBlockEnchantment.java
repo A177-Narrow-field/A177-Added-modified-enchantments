@@ -168,17 +168,10 @@ public class SimpleBlockEnchantment extends Enchantment {
         ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
         if (!chestplate.isEmpty() && chestplate.getItem() instanceof ArmorItem) {
             int maxDurability = chestplate.getMaxDamage();
-            // 基础消耗：2%最大耐久度，最少2点
-            int basePercent = 2;
-            int baseMin = 2;
-            // 每级增加：2%额外消耗和最少2点额外消耗
-            int percentPerLevel = 2;
-            int minPerLevel = 2;
+            // 固定消耗：6%最大耐久度，最少6点
+            int percentDamage = 6;
             
-            int percentDamage = basePercent + (level - 1) * percentPerLevel;
-            int minDamage = baseMin + (level - 1) * minPerLevel;
-            
-            int damageToConsume = Math.max(minDamage, (int) (maxDurability * (percentDamage / 100.0)));
+            int damageToConsume = Math.max(6, (int) (maxDurability * (percentDamage / 100.0)));
             
             // 减少耐久度
             chestplate.hurtAndBreak(damageToConsume, player, (p) -> p.broadcastBreakEvent(EquipmentSlot.CHEST));

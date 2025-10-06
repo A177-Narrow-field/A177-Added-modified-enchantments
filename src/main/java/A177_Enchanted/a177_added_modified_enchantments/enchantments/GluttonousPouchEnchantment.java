@@ -79,7 +79,7 @@ public class GluttonousPouchEnchantment extends Enchantment {
     private static final Map<UUID, Long> PLAYER_GRAVITY_END_TIME = new HashMap<>();
 
     public GluttonousPouchEnchantment() {
-        super(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
+        super(Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, new EquipmentSlot[]{EquipmentSlot.CHEST});
     }
 
     @Override
@@ -146,6 +146,11 @@ public class GluttonousPouchEnchantment extends Enchantment {
             
             // 只在玩家拥有附魔时处理效果
             if (enchantmentLevel > 0) {
+                // 检查是否为摔落伤害，如果是则不处理
+                if (event.getSource().is(net.minecraft.tags.DamageTypeTags.IS_FALL)) {
+                    return;
+                }
+                
                 // 检查玩家是否有有效的胸甲
                 ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
                 if (chestplate.isEmpty() || !(chestplate.getItem() instanceof ArmorItem) || chestplate.getDamageValue() >= chestplate.getMaxDamage()) {
@@ -166,10 +171,8 @@ public class GluttonousPouchEnchantment extends Enchantment {
                         // 播放格挡音效
                         playBlockSound(player);
                         
-                        // 完全格挡伤害（但不格挡摔落伤害）
-                        if (!event.getSource().is(net.minecraft.tags.DamageTypeTags.IS_FALL)) {
-                            event.setCanceled(true);
-                        }
+                        // 完全格挡伤害（摔落伤害已在前面返回，不会执行到这里）
+                        event.setCanceled(true);
                     }
                 }
             }

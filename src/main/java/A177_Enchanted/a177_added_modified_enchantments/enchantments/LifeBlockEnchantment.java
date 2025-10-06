@@ -21,17 +21,11 @@ import java.util.Random;
 
 @Mod.EventBusSubscriber
 public class LifeBlockEnchantment extends Enchantment {
-    // 基础格挡概率 (10%)
-    private static final double BASE_BLOCK_CHANCE = 0.1;
-    
-    // 每级格挡概率提升 (10%)
-    private static final double BLOCK_CHANCE_PER_LEVEL = 0.1;
+    // 每级格挡概率提升 (18%)
+    private static final double BLOCK_CHANCE_PER_LEVEL = 0.18;
     
     // 随机数生成器
     private static final Random RANDOM = new Random();
-    
-    // 格挡成功消耗的生命值
-    private static final float HEALTH_COST = 4.0f;
     
     // 获取配置
     private static AllEnchantmentsConfig.EnchantConfig getConfig() {
@@ -105,22 +99,22 @@ public class LifeBlockEnchantment extends Enchantment {
                     return; // 如果没有胸甲或胸甲已损坏，则不进行格挡
                 }
                 
-                // 计算格挡概率 (基础10% + 每级10%，最高5级=基础10%+4*10%=50%)
-                double blockChance = Math.min(0.5, BASE_BLOCK_CHANCE + (enchantmentLevel - 1) * BLOCK_CHANCE_PER_LEVEL);
+                // 计算格挡概率 (每级18%，最高5级=5*18%=90%)
+                double blockChance = Math.min(0.9, enchantmentLevel * BLOCK_CHANCE_PER_LEVEL);
                 
                 // 判定是否格挡成功
                 if (RANDOM.nextDouble() < blockChance) {
-                    // 检查玩家是否有足够的生命值消耗
-                    if (player.getHealth() > HEALTH_COST) {
-                        // 消耗生命值
-                        player.hurt(player.damageSources().generic(), HEALTH_COST);
-                        
-                        // 播放格挡音效
-                        playBlockSound(player);
-                        
-                        // 减少伤害（格挡成功）
-                        event.setAmount(0);
-                    }
+                    // 计算消耗的生命值：固定消耗15%最大生命值
+                    float healthCost = player.getMaxHealth() * 0.15f;
+                    
+                    // 消耗生命值，即使会导致死亡也执行消耗
+                    player.setHealth(player.getHealth() - healthCost);
+                    
+                    // 播放格挡音效
+                    playBlockSound(player);
+                    
+                    // 减少伤害（格挡成功）
+                    event.setAmount(0);
                 }
             }
         }
