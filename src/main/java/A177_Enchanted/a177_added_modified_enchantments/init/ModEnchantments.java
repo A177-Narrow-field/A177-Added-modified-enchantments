@@ -57,7 +57,7 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> SWEEPING_ENHANCEMENT = ENCHANTMENTS.register("sweeping_enhancement", SweepingEnhancementEnchantment::new);//强化横扫
     public static final RegistryObject<Enchantment> SWEEPING_FIRE = ENCHANTMENTS.register("sweeping_fire", SweepingFireEnchantment::new);//火之横扫
     public static final RegistryObject<Enchantment> SWEEPING_SLASH = ENCHANTMENTS.register("sweeping_slash", SweepingSlashEnchantment::new);//歼斩横扫
-    public static final RegistryObject<Enchantment> SWEEPING_STRIKE = ENCHANTMENTS.register("sweeping_strike", SweepingStrikeEnchantment::new);//横扫打击
+    public static final RegistryObject<Enchantment> SWEEPING_STRIKE = ENCHANTMENTS.register("sweeping_strike", SweepingStrikeEnchantment::new);//连斩
     public static final RegistryObject<Enchantment> SWIFT_FEAST = ENCHANTMENTS.register("swift_feast", SwiftFeastEnchantment::new);//速食
     public static final RegistryObject<Enchantment> SWIFT_IMPACT = ENCHANTMENTS.register("swift_impact", SwiftImpactEnchantment::new);//急速冲击
     public static final RegistryObject<Enchantment> SWIFT_STRIKE = ENCHANTMENTS.register("swift_strike", SwiftStrikeEnchantment::new);//速击
