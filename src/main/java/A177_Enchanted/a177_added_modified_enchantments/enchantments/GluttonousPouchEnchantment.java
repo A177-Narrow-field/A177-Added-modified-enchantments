@@ -13,6 +13,7 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -124,12 +125,15 @@ public class GluttonousPouchEnchantment extends Enchantment {
     // 与胃袋附魔冲突
     @Override
     protected boolean checkCompatibility(Enchantment other) {
-        return super.checkCompatibility(other) && other != ModEnchantments.STOMACH_POUCH.get();
+        return super.checkCompatibility(other) && 
+               other != ModEnchantments.STOMACH_POUCH.get() &&
+               !(other instanceof net.minecraft.world.item.enchantment.ProtectionEnchantment) &&
+               !(other instanceof net.minecraft.world.item.enchantment.ThornsEnchantment);
     }
 
     @SubscribeEvent
     public static void onLivingHurt(LivingHurtEvent event) {
-        // 处理格挡效果和摔落伤害
+        // 处理格挡效果，但不处理摔落伤害
         if (event.getEntity() instanceof Player player) {
             UUID playerId = player.getUUID();
             
@@ -162,10 +166,26 @@ public class GluttonousPouchEnchantment extends Enchantment {
                         // 播放格挡音效
                         playBlockSound(player);
                         
-                        // 完全格挡伤害
-                        event.setCanceled(true);
+                        // 完全格挡伤害（但不格挡摔落伤害）
+                        if (!event.getSource().is(net.minecraft.tags.DamageTypeTags.IS_FALL)) {
+                            event.setCanceled(true);
+                        }
                     }
                 }
+            }
+        }
+    }
+    
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            // 获取玩家的Gluttonous Pouch附魔等级
+            int enchantmentLevel = EnchantmentHelper.getEnchantmentLevel(ModEnchantments.GLUTTONOUS_POUCH.get(), player);
+            
+            // 只在玩家拥有附魔时处理效果
+            if (enchantmentLevel > 0) {
+                // 增加5倍摔落伤害（总共造成6倍原始伤害）
+                event.setDistance(event.getDistance() * 6.0f);
             }
         }
     }

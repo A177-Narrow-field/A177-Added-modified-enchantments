@@ -91,8 +91,8 @@ public class ShovelTridentEnchantment extends Enchantment {
             return;
         }
         
-        // 每级增加80%伤害（显示在物品描述中）
-        double damageBonus = level * 0.8;
+        // 每级增加60%伤害（显示在物品描述中）
+        double damageBonus = level * 0.6;
         
         // 添加伤害加成修饰符
         event.addModifier(Attributes.ATTACK_DAMAGE, 
@@ -112,8 +112,8 @@ public class ShovelTridentEnchantment extends Enchantment {
             
             // 如果有附魔且等级大于0
             if (level > 0) {
-                // 增加伤害（每级增加80%伤害）
-                float additionalDamage = event.getAmount() * (0.8f * level);
+                // 增加伤害（每级增加60%伤害）
+                float additionalDamage = event.getAmount() * (0.6f * level);
                 event.setAmount(event.getAmount() + additionalDamage);
             }
         }

@@ -88,8 +88,8 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> FLAME_SHELL = ENCHANTMENTS.register("flame_shell", FlameShellEnchantment::new);//炎壳
     public static final RegistryObject<Enchantment> BURNING_FURY = ENCHANTMENTS.register("burning_fury", BurningFuryEnchantment::new);//焚怒
     public static final RegistryObject<Enchantment> DESIRE_FLAME = ENCHANTMENTS.register("desire_flame", DesireFlameEnchantment::new);//欲火神修
-    public static final RegistryObject<Enchantment> SWIFT_STEP = ENCHANTMENTS.register("swift_step", SwiftStepEnchantment::new);//速行
-    public static final RegistryObject<Enchantment> BASIC_SPEED = ENCHANTMENTS.register("basic_speed", BasicSpeedEnchantment::new);//初级速行
+    public static final RegistryObject<Enchantment> SWIFT_STEP = ENCHANTMENTS.register("swift_step", SwiftStepEnchantment::new);//急行
+    public static final RegistryObject<Enchantment> BASIC_SPEED = ENCHANTMENTS.register("basic_speed", BasicSpeedEnchantment::new);//初级急行
     public static final RegistryObject<Enchantment> BITE = ENCHANTMENTS.register("bite", BiteEnchantment::new);//啃食
     public static final RegistryObject<Enchantment> BLESSING_NO24 = ENCHANTMENTS.register("blessing_no24", BlessingNo24Enchantment::new);//24号祝福
     public static final RegistryObject<Enchantment> BLOOD_EDGE = ENCHANTMENTS.register("blood_edge", BloodEdgeEnchantment::new);//饮血棱
