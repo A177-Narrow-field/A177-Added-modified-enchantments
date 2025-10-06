@@ -41,8 +41,8 @@ public class OreDetectorConfig {
                         obj -> obj instanceof String);
         
         detectionRadius = builder
-                .comment("探测半径 (默认值: 18)")
-                .define("detectionRadius", 18);
+                .comment("探测半径 (默认值: 12)")
+                .define("detectionRadius", 12);
         
         sneakingDetectionRadius = builder
                 .comment("潜行时探测半径 (默认值: 5)")

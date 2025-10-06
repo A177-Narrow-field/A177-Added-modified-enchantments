@@ -37,8 +37,8 @@ public class OreHighlightEntity extends LivingEntity {
         super(ModEntities.ORE_HIGHLIGHT.get(), level);
         this.setPos(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
         this.entityData.set(ORIGIN_POS, pos);
-        // 设置实体生命周期为300 ticks (15秒)
-        this.entityData.set(LIFETIME, 300);
+        // 设置实体生命周期为160 ticks (8秒)
+        this.entityData.set(LIFETIME, 160);
         // 添加发光效果
         this.addEffect(new net.minecraft.world.effect.MobEffectInstance(net.minecraft.world.effect.MobEffects.GLOWING, 120, 0, false, false));
         // 禁用物理效果
@@ -182,7 +182,7 @@ public class OreHighlightEntity extends LivingEntity {
     // 添加属性构建器
     public static AttributeSupplier.Builder createAttributes() {
         return LivingEntity.createLivingAttributes()
-                .add(Attributes.MAX_HEALTH, 1.0D)
+                .add(Attributes.MAX_HEALTH, 0.0D)
                 .add(Attributes.MOVEMENT_SPEED, 0.0D)
                 .add(Attributes.FLYING_SPEED, 0.0D)
                 .add(Attributes.KNOCKBACK_RESISTANCE, 1.0D);

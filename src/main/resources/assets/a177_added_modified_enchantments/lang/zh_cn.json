@@ -231,5 +231,6 @@
   "enchantment.a177_added_modified_enchantments.lightburn_walker": "§6光灼行者",
   "enchantment.a177_added_modified_enchantments.ore_detector": "§6矿探",
   "block.a177_added_modified_enchantments.cloud_block": "云块",
-  "block.a177_added_modified_enchantments.hardened_lava_block": "硬熔岩"
+  "block.a177_added_modified_enchantments.hardened_lava_block": "硬熔岩",
+  "entitie.a177_added_modified_enchantments.ore_highlight": " "
 }

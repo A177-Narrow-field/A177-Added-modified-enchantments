@@ -163,8 +163,8 @@ public class OreDetectorEnchantment extends Enchantment {
         // 探测玩家周围范围内的矿物
         detectOres(player, event.getLevel());
 
-        // 设置冷却时间（3秒）
-        player.getCooldowns().addCooldown(tool.getItem(), 60); // 60 ticks = 3秒
+        // 设置冷却时间（2秒）
+        player.getCooldowns().addCooldown(tool.getItem(), 40); // 40 ticks = 2秒
     }
 
     /**
