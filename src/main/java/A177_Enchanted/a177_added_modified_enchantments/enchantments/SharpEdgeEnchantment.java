@@ -71,8 +71,8 @@ public class SharpEdgeEnchantment extends Enchantment {
 
     @Override
     public boolean canEnchant(ItemStack stack) {
-        // 只能附在武器上
-        return stack.getItem() instanceof SwordItem;
+        // 可以附在武器和工具上
+        return stack.getItem() instanceof SwordItem || stack.getItem() instanceof TieredItem;
     }
 
     @Override
