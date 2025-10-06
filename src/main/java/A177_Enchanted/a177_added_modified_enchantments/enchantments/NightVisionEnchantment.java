@@ -11,6 +11,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,8 +25,8 @@ import java.util.UUID;
 public class NightVisionEnchantment extends Enchantment {
     // 存储玩家开始蹲下的时间
     private static final Map<UUID, Long> CROUCH_START_TIME = new HashMap<>();
-    // 存储夜视效果的结束时间
-    private static final Map<UUID, Long> NIGHT_VISION_END_TIME = new HashMap<>();
+    // 存储玩家是否已经触发了夜视效果
+    private static final Map<UUID, Boolean> ACTIVE_NIGHT_VISION = new HashMap<>();
     
     // 获取配置
     private static AllEnchantmentsConfig.EnchantConfig getConfig() {
@@ -85,48 +87,50 @@ public class NightVisionEnchantment extends Enchantment {
                 UUID playerUUID = player.getUUID();
                 long currentTime = player.level().getGameTime();
                 
-                // 检查夜视效果是否应该结束
-                if (NIGHT_VISION_END_TIME.containsKey(playerUUID) && currentTime >= NIGHT_VISION_END_TIME.get(playerUUID)) {
-                    NIGHT_VISION_END_TIME.remove(playerUUID);
-                    // 移除夜视效果
-                    player.removeEffect(MobEffects.NIGHT_VISION);
-                }
-                
                 // 检查玩家是否在蹲下
                 if (player.isCrouching()) {
                     // 如果玩家之前没有记录蹲下时间，则记录当前时间
                     if (!CROUCH_START_TIME.containsKey(playerUUID)) {
                         CROUCH_START_TIME.put(playerUUID, currentTime);
                     } 
-                    // 根据附魔等级确定所需蹲下时间：3秒基础时间，每级减少0.5秒(10 ticks)
-                    else if (currentTime - CROUCH_START_TIME.get(playerUUID) >= (60 - (level * 10L)) &&
-                             !NIGHT_VISION_END_TIME.containsKey(playerUUID)) {
-                        // 触发夜视效果
-                        applyNightVisionEffect(player, level);
-                        
-                        // 设置夜视效果结束时间（30秒后）
-                        NIGHT_VISION_END_TIME.put(playerUUID, currentTime + 600);
-                        
-                        // 清除蹲下时间记录，需要重新蹲下才能再次触发
-                        CROUCH_START_TIME.remove(playerUUID);
+                    // 根据附魔等级确定所需蹲下时间：3.5秒基础时间，每级减少1秒(20 ticks)
+                    // 只有当效果未激活时才能再次触发
+                    else if (currentTime - CROUCH_START_TIME.get(playerUUID) >= (70 - (level * 20L)) &&
+                             !ACTIVE_NIGHT_VISION.getOrDefault(playerUUID, false)) {
+                        // 检查玩家是否有足够的经验值
+                        if (player.experienceLevel > 0 || player.experienceProgress > 0) {
+                            // 触发夜视效果
+                            applyNightVisionEffect(player, level);
+                            // 播放末地传送门框架放置末影之眼的音效
+                            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), 
+                                SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, 1.0F);
+                            
+                            // 消耗10点经验值（不是等级）
+                            player.giveExperiencePoints(-10);
+                            
+                            // 标记效果已激活
+                            ACTIVE_NIGHT_VISION.put(playerUUID, true);
+                            
+                            // 清除蹲下时间记录
+                            CROUCH_START_TIME.remove(playerUUID);
+                        }
                     }
                 } else {
-                    // 如果玩家没有蹲下，清除蹲下时间记录
+                    // 如果玩家没有蹲下，清除蹲下时间记录和激活状态
                     CROUCH_START_TIME.remove(playerUUID);
+                    ACTIVE_NIGHT_VISION.remove(playerUUID);
                 }
             } else {
                 // 如果玩家没有这个附魔，清除相关记录
                 UUID playerUUID = player.getUUID();
                 CROUCH_START_TIME.remove(playerUUID);
-                NIGHT_VISION_END_TIME.remove(playerUUID);
-                // 确保移除可能存在的夜视效果
-                player.removeEffect(MobEffects.NIGHT_VISION);
+                ACTIVE_NIGHT_VISION.remove(playerUUID);
             }
         }
     }
 
     private static void applyNightVisionEffect(Player player, int level) {
-        // 给玩家添加夜视效果，持续300秒
+        // 给玩家添加夜视效果，持续30秒
         player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 600, 0, false, false, true));
     }
 }

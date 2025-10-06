@@ -13,6 +13,8 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -99,14 +101,23 @@ public class SenseEnchantment extends Enchantment {
                     // 根据附魔等级确定所需蹲下时间：1级需要4秒(85　ticks)
                     else if (currentTime - CROUCH_START_TIME.get(playerUUID) >= (80 - (level * 25L)) &&
                              !HIGHLIGHT_END_TIME.containsKey(playerUUID)) {
-                        // 触发高亮效果
-                        applyHighlightEffect(player, level);
-                        
-                        // 设置高亮效果结束时间（5秒后）
-                        HIGHLIGHT_END_TIME.put(playerUUID, currentTime + 100);
-                        
-                        // 清除蹲下时间记录，需要重新蹲下才能再次触发
-                        CROUCH_START_TIME.remove(playerUUID);
+                        // 检查玩家是否有足够的经验值
+                        if (player.experienceLevel > 0 || player.experienceProgress > 0) {
+                            // 触发高亮效果
+                            applyHighlightEffect(player, level);
+                            // 播放末地传送门框架放置末影之眼的音效
+                            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), 
+                                SoundEvents.END_PORTAL_FRAME_FILL, SoundSource.PLAYERS, 1.0F, 1.0F);
+                            
+                            // 消耗20点经验值（不是等级）
+                            player.giveExperiencePoints(-20);
+                            
+                            // 设置高亮效果结束时间（5秒后）
+                            HIGHLIGHT_END_TIME.put(playerUUID, currentTime + 100);
+                            
+                            // 清除蹲下时间记录，需要重新蹲下才能再次触发
+                            CROUCH_START_TIME.remove(playerUUID);
+                        }
                     }
                 } else {
                     // 如果玩家没有蹲下，清除蹲下时间记录
