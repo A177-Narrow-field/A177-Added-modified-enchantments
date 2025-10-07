@@ -231,5 +231,7 @@
   "enchantment.a177_added_modified_enchantments.lightburn_walker": "§6Lightburn Walker",
   "enchantment.a177_added_modified_enchantments.ore_detector": "§6Ore Detector",
   "block.a177_added_modified_enchantments.cloud_block": "Cloud Block",
-  "block.a177_added_modified_enchantments.hardened_lava_block": "Hardened Lava Block"
+  "block.a177_added_modified_enchantments.hardened_lava_block": "Hardened Lava Block",
+  "entity.a177_added_modified_enchantments.ore_highlight": " "
+
 }
