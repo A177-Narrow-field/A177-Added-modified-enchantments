@@ -115,8 +115,18 @@ public class HeartOfTideEnchantment extends Enchantment {
                 if (level > 0) {
                     // 检查玩家是否在水中或雨中
                     if (isInWaterOrRain(player)) {
-                        // 给予玩家潮涌能量效果，持续12秒（240 ticks）
-                        player.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 240, 0, true, false));
+                        // 给予玩家潮涌能量效果，持续6秒
+                        player.addEffect(new MobEffectInstance(MobEffects.CONDUIT_POWER, 120, 0, true, false));
+                    }
+                    
+                    // 检查玩家是否有潮涌能量效果，如果有则每秒恢复1点血量（每隔20 tick 恢复1点血）
+                    if (player.hasEffect(MobEffects.CONDUIT_POWER)) {
+                        // 每20个tick（即1秒）恢复1点血量
+                        if (player.tickCount % 20 == 0) {
+                            if (player.getHealth() < player.getMaxHealth()) {
+                                player.setHealth(player.getHealth() + 1.0F);
+                            }
+                        }
                     }
                 }
             }

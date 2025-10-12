@@ -1,14 +1,12 @@
 package A177_Enchanted.a177_added_modified_enchantments.enchantments;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -20,10 +18,11 @@ import A177_Enchanted.a177_added_modified_enchantments.utils.CuriosHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
+
 @Mod.EventBusSubscriber
 public class SoulboundEnchantment extends Enchantment {
-    private static final String SOULBOUND_ITEMS_TAG = "SoulboundItems";
-    
     // 获取配置
     private static AllEnchantmentsConfig.EnchantConfig getConfig() {
         return AllEnchantmentsConfig.ENCHANTMENTS.get("soulbound");
@@ -78,8 +77,13 @@ public class SoulboundEnchantment extends Enchantment {
 
     @SubscribeEvent
     public static void onPlayerDeath(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            // 创建一个列表来存储带有灵魂持有附魔的物品
+        if (event.getEntity() instanceof Player player && !player.level().isClientSide()) {
+            // 在死亡不掉落模式下，不需要特殊处理灵魂绑定物品
+            if (player.level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+            
+            // 创建一个列表来存储带有灵魂持有附魔的物品信息
             List<ItemStack> soulboundItems = new ArrayList<>();
             
             // 检查玩家物品栏中的所有物品（包括背包）
@@ -87,78 +91,124 @@ public class SoulboundEnchantment extends Enchantment {
                 ItemStack stack = player.getInventory().getItem(i);
                 if (!stack.isEmpty() && stack.getEnchantmentLevel(ModEnchantments.SOULBOUND.get()) > 0) {
                     soulboundItems.add(stack.copy());
+                    // 从原位置清除物品
                     player.getInventory().setItem(i, ItemStack.EMPTY);
                 }
             }
             
-            // 检查所有装备槽
+            // 检查所有装备槽（包括副手）
             for (EquipmentSlot slot : EquipmentSlot.values()) {
                 if (slot.getType() == EquipmentSlot.Type.ARMOR || slot == EquipmentSlot.OFFHAND) {
                     ItemStack stack = player.getItemBySlot(slot);
                     if (!stack.isEmpty() && stack.getEnchantmentLevel(ModEnchantments.SOULBOUND.get()) > 0) {
                         soulboundItems.add(stack.copy());
+                        // 从原位置清除物品
                         player.setItemSlot(slot, ItemStack.EMPTY);
+
                     }
                 }
             }
             
-            // 检查Curios饰品栏
-            CuriosHelper.handleCuriosItemsOnDeath(player, soulboundItems);
+            // 检查Curios槽位中的物品
+            if (CuriosHelper.CURIOS_LOADED) {
+                CuriosApi.getCuriosInventory(player).ifPresent(inventory -> 
+                    inventory.getCurios().forEach((id, slotInventory) -> {
+                        IDynamicStackHandler stacks = slotInventory.getStacks();
+                        for (int i = 0; i < stacks.getSlots(); i++) {
+                            ItemStack stack = stacks.getStackInSlot(i);
+                            if (!stack.isEmpty() && stack.getEnchantmentLevel(ModEnchantments.SOULBOUND.get()) > 0) {
+                                soulboundItems.add(stack.copy());
+                                // 从原位置清除物品
+                                stacks.setStackInSlot(i, ItemStack.EMPTY);
+
+                            }
+                        }
+                    })
+                );
+            }
             
-            // 将带有灵魂持有附魔的物品保存到玩家数据中，以便在重生时恢复
+            // 将带有灵魂持有附魔的物品保存到玩家数据中，以便在重生时检查
             if (!soulboundItems.isEmpty()) {
                 // 将物品列表存储到玩家的持久化数据中
-                CompoundTag persistentData = player.getPersistentData();
-                ListTag soulboundItemsTag = new ListTag();
+                net.minecraft.nbt.CompoundTag persistentData = player.getPersistentData();
+                net.minecraft.nbt.ListTag soulboundItemsTag = new net.minecraft.nbt.ListTag();
                 
                 for (ItemStack stack : soulboundItems) {
-                    CompoundTag itemTag = new CompoundTag();
+                    net.minecraft.nbt.CompoundTag itemTag = new net.minecraft.nbt.CompoundTag();
                     stack.save(itemTag);
                     soulboundItemsTag.add(itemTag);
                 }
                 
-                persistentData.put(SOULBOUND_ITEMS_TAG, soulboundItemsTag);
-                player.getInventory().setChanged();
+                persistentData.put("SoulboundItems", soulboundItemsTag);
+            }
+            
+            // 清除Curios槽位中带有灵魂绑定附魔的物品
+            if (CuriosHelper.CURIOS_LOADED) {
+                CuriosApi.getCuriosInventory(player).ifPresent(inventory -> 
+                    inventory.getCurios().forEach((id, slotInventory) -> {
+                        IDynamicStackHandler stacks = slotInventory.getStacks();
+                        for (int i = 0; i < stacks.getSlots(); i++) {
+                            ItemStack stack = stacks.getStackInSlot(i);
+                            if (!stack.isEmpty() && stack.getEnchantmentLevel(ModEnchantments.SOULBOUND.get()) > 0) {
+                                stacks.setStackInSlot(i, ItemStack.EMPTY);
+                            }
+                        }
+                    })
+                );
             }
         }
     }
     
     @SubscribeEvent
     public static void onPlayerClone(PlayerEvent.Clone event) {
-        if (event.isWasDeath()) {
+        if (event.isWasDeath() && !event.getEntity().level().isClientSide()) {
             Player originalPlayer = event.getOriginal();
             Player newPlayer = event.getEntity();
             
+            // 在死亡不掉落模式下，不需要特殊处理灵魂绑定物品
+            if (newPlayer.level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+            
             // 检查原玩家是否有存储的灵魂绑定物品
-            CompoundTag persistentData = originalPlayer.getPersistentData();
-            if (persistentData.contains(SOULBOUND_ITEMS_TAG, Tag.TAG_LIST)) {
-                ListTag soulboundItemsTag = persistentData.getList(SOULBOUND_ITEMS_TAG, Tag.TAG_COMPOUND);
+            net.minecraft.nbt.CompoundTag persistentData = originalPlayer.getPersistentData();
+            if (persistentData.contains("SoulboundItems", net.minecraft.nbt.Tag.TAG_LIST)) {
+                net.minecraft.nbt.ListTag soulboundItemsTag = persistentData.getList("SoulboundItems", net.minecraft.nbt.Tag.TAG_COMPOUND);
                 
-                // 将物品添加到新玩家的物品栏中
+                // 恢复所有保存的灵魂绑定物品
                 for (int i = 0; i < soulboundItemsTag.size(); i++) {
-                    CompoundTag itemTag = soulboundItemsTag.getCompound(i);
-                    ItemStack stack = ItemStack.of(itemTag);
+                    net.minecraft.nbt.CompoundTag itemTag = soulboundItemsTag.getCompound(i);
+                    ItemStack soulboundStack = ItemStack.of(itemTag);
                     
-                    if (!stack.isEmpty()) {
-                        boolean itemHandled = false;
-                        
-                        // 首先尝试将物品添加到Curios槽位（如果物品应该放在那里）
-                        itemHandled = CuriosHelper.tryPlaceInCurios(newPlayer, stack);
-                        
-                        // 如果不能放在Curios槽位，则尝试放在普通物品栏
-                        if (!itemHandled) {
-                            // 尝试将物品添加到玩家物品栏
-                            if (!newPlayer.getInventory().add(stack)) {
-                                // 如果无法添加到物品栏，则掉落在玩家位置
-                                newPlayer.drop(stack, false);
-                            }
+                    if (!soulboundStack.isEmpty()) {
+                        // 直接将物品添加到玩家背包中
+                        if (!newPlayer.getInventory().add(soulboundStack)) {
+                            // 如果背包满了，将物品掉落在玩家位置
+                            newPlayer.drop(soulboundStack, false);
                         }
                     }
                 }
                 
                 // 清除原玩家的数据
-                persistentData.remove(SOULBOUND_ITEMS_TAG);
+                persistentData.remove("SoulboundItems");
             }
+        }
+    }
+    
+    @SubscribeEvent
+    public static void onPlayerDrops(LivingDropsEvent event) {
+        if (event.getEntity() instanceof Player player) {
+            // 在死亡不掉落模式下，不需要处理掉落事件
+            if (player.level().getGameRules().getBoolean(net.minecraft.world.level.GameRules.RULE_KEEPINVENTORY)) {
+                return;
+            }
+            
+            // 遍历所有将要掉落的物品
+            event.getDrops().removeIf(itemEntity -> {
+                ItemStack stack = itemEntity.getItem();
+                // 如果物品有灵魂绑定附魔，则取消其掉落
+                return stack.getEnchantmentLevel(ModEnchantments.SOULBOUND.get()) > 0;
+            });
         }
     }
 }

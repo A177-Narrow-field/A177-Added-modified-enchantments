@@ -98,6 +98,9 @@ public class TeleportArrowEnchantment extends Enchantment {
             if (level > 0) {
                 // 标记玩家即将发射的箭矢
                 player.getTags().add("teleport_arrow_shooter");
+                
+                // 立即开始冷却并消耗耐久
+                startCooldownAndDamage(player, weapon);
             }
         }
     }
@@ -119,11 +122,6 @@ public class TeleportArrowEnchantment extends Enchantment {
                 if (level > 0) {
                     // 标记箭矢带有传送箭附魔
                     arrow.getTags().add("teleport_arrow");
-                    
-                    // 存储武器信息用于冷却和耐久消耗
-                    arrow.getTags().add("teleport_bow");
-                    // 使用PersistentData存储武器信息
-                    weapon.save(arrow.getPersistentData().getCompound("teleport_bow"));
                 }
             }
         }
@@ -156,6 +154,16 @@ public class TeleportArrowEnchantment extends Enchantment {
         }
     }
     
+    private static void startCooldownAndDamage(Player player, ItemStack weapon) {
+        // 消耗武器10%耐久
+        weapon.hurtAndBreak((int) (weapon.getMaxDamage() * 0.1), player, (p) -> {
+            p.broadcastBreakEvent(player.getUsedItemHand());
+        });
+        
+        // 设置武器3秒冷却时间（60 ticks）
+        player.getCooldowns().addCooldown(weapon.getItem(), 60);
+    }
+    
     private static void teleportPlayer(ServerPlayer player, double x, double y, double z, AbstractArrow arrow) {
         Level level = player.level();
         
@@ -180,25 +188,6 @@ public class TeleportArrowEnchantment extends Enchantment {
         if (!hasStonePelletMan) {
             float damage = player.getMaxHealth() * 0.6f;
             player.hurt(level.damageSources().fall(), damage);
-        }
-        
-        // 消耗武器10%耐久
-        if (arrow.getTags().contains("teleport_bow")) {
-            // 获取玩家当前手持的武器
-            ItemStack weapon = player.getMainHandItem();
-            if (weapon.isEmpty() || !(weapon.getItem() instanceof BowItem || weapon.getItem() instanceof CrossbowItem)) {
-                weapon = player.getOffhandItem();
-            }
-            
-            // 确保武器仍然具有传送箭附魔
-            if (weapon.getEnchantmentLevel(ModEnchantments.TELEPORT_ARROW.get()) > 0) {
-                weapon.hurtAndBreak((int) (weapon.getMaxDamage() * 0.1), player, (p) -> {
-                    p.broadcastBreakEvent(player.getUsedItemHand());
-                });
-                
-                // 设置武器3秒冷却时间（60 ticks）
-                player.getCooldowns().addCooldown(weapon.getItem(), 60);
-            }
         }
     }
 }

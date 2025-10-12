@@ -23,7 +23,7 @@ import java.util.UUID;
 public class VitalityBoostEnchantment extends Enchantment {
     // 生命值和护甲值的增加量
     private static final double HEALTH_PER_LEVEL = 4.0;
-    private static final double ARMOR_PER_LEVEL = 2.0;
+    private static final double ARMOR_PER_LEVEL = 1.0;
 
     // 属性修饰符UUID，用于唯一标识我们的修饰符
     private static final UUID HEALTH_MODIFIER_UUID = UUID.fromString("CB3F55D3-645C-4F38-A497-9C13A33DB5CF");
@@ -44,7 +44,7 @@ public class VitalityBoostEnchantment extends Enchantment {
 
     @Override
     public int getMaxLevel() {
-        return 5;
+        return 10;
     }
 
     @Override

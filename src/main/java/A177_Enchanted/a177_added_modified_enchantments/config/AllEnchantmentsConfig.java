@@ -249,12 +249,18 @@ public class AllEnchantmentsConfig {
     // 定义头盔类附魔的配置项
     public static final EnchantConfig SENSE;
     public static final EnchantConfig KING;
+    
+    // 新增策马靴附魔配置项
+    public static final EnchantConfig HORSE_BOOTS;
     public static final EnchantConfig GENERAL;
     public static final EnchantConfig COMMANDER;
     public static final EnchantConfig UNDEAD_COMMANDER;
     public static final EnchantConfig ILLAGER_COMMANDER;
     public static final EnchantConfig NOISE_ANNOYANCE;
-    
+    // 新增匪首和吸血鬼附魔配置项
+    public static final EnchantConfig CHIEFTAIN;
+    public static final EnchantConfig VAMPIRE;
+
     // 定义剑类附魔的配置项
     public static final EnchantConfig LONE_WOLF;
     public static final EnchantConfig LEADER;
@@ -1308,6 +1314,11 @@ public class AllEnchantmentsConfig {
                 false, true, false);
         ENCHANTMENTS.put("foot_block", FOOT_BLOCK);
         
+        // 新增策马靴附魔配置 - 不是宝藏，可发现，不可交易
+        HORSE_BOOTS = createEnchantConfig("horse_boots", "策马靴",
+                false, true, false);
+        ENCHANTMENTS.put("horse_boots", HORSE_BOOTS);
+        
         BUILDER.pop();
         
         // 范围脚部搭建附魔配置
@@ -1397,6 +1408,16 @@ public class AllEnchantmentsConfig {
         NOISE_ANNOYANCE = createEnchantConfig("noise_annoyance", "音躁",
                 false, true, true);
         ENCHANTMENTS.put("noise_annoyance", NOISE_ANNOYANCE);
+        
+        // 匪首附魔配置 - 不是宝藏，可发现，不可交易
+        CHIEFTAIN = createEnchantConfig("chieftain", "匪首",
+                false, true, false);
+        ENCHANTMENTS.put("chieftain", CHIEFTAIN);
+        
+        // 吸血鬼附魔配置 - 不是宝藏，可发现，不可交易
+        VAMPIRE = createEnchantConfig("vampire", "吸血鬼",
+                false, true, false);
+        ENCHANTMENTS.put("vampire", VAMPIRE);
         
         BUILDER.pop();
         

@@ -184,6 +184,8 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> HOVER = ENCHANTMENTS.register("hover", HoverEnchantment::new);//氧力悬停
     public static final RegistryObject<Enchantment> TAUNT_EXCITEMENT = ENCHANTMENTS.register("taunt_excitement", TauntExcitementEnchantment::new);//敌速追行
     public static final RegistryObject<Enchantment> NOISY_SOUND = ENCHANTMENTS.register("noisy_sound", NoisySoundEnchantment::new);//音躁
+    public static final RegistryObject<Enchantment> CHIEFTAIN = ENCHANTMENTS.register("chieftain", ChieftainEnchantment::new);//匪首
+    public static final RegistryObject<Enchantment> VAMPIRE = ENCHANTMENTS.register("vampire", VampireEnchantment::new);//吸血鬼
     public static final RegistryObject<Enchantment> SOUL_REAPING_SICKLE = ENCHANTMENTS.register("soul_reaping_sickle", SoulReapingSickleEnchantment::new);//祭魂镰斩
     public static final RegistryObject<Enchantment> SOUL_PAYING_CUT = ENCHANTMENTS.register("soul_paying_cut", SoulPayingCutEnchantment::new);//付魂斩
     public static final RegistryObject<Enchantment> MILITARY_SHOVEL = ENCHANTMENTS.register("military_shovel", MilitaryShovelEnchantment::new);//功能军锹
@@ -241,4 +243,6 @@ public class ModEnchantments {
     public static final RegistryObject<Enchantment> ARMY_SUMMON = ENCHANTMENTS.register("army_summon", ArmySummonEnchantment::new);// 召军
     public static final RegistryObject<Enchantment> ELYTRA_ARMOR = ENCHANTMENTS.register("elytra_armor", ElytraArmorEnchantment::new);// 翅韧战甲
     public static final RegistryObject<Enchantment> ORE_DETECTOR = ENCHANTMENTS.register("ore_detector", OreDetectorEnchantment::new);// 矿探
+    public static final RegistryObject<Enchantment> HORSE_BOOTS = ENCHANTMENTS.register("horse_boots", HorseBootsEnchantment::new);//策马靴
+
 }

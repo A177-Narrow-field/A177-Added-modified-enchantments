@@ -81,8 +81,12 @@ public class SturdyBarbarianEnchantment extends Enchantment {
     public static void onLivingEquipmentChange(LivingEquipmentChangeEvent event) {
         // 当胸甲装备发生变化时处理属性变更
         if (event.getSlot() == EquipmentSlot.CHEST) {
-            // 移除旧的属性修饰符
-            event.getEntity().getAttributes().getInstance(Attributes.ATTACK_DAMAGE).removeModifier(DAMAGE_MODIFIER_UUID);
+            // 修复空指针异常：检查AttributeInstance是否为null
+            var attributes = event.getEntity().getAttributes();
+            var attributeInstance = attributes.getInstance(Attributes.ATTACK_DAMAGE);
+            if (attributeInstance != null) {
+                attributeInstance.removeModifier(DAMAGE_MODIFIER_UUID);
+            }
 
             // 如果有新的装备且有磐蛮附魔，则添加属性修饰符
             ItemStack newItem = event.getTo();
@@ -100,13 +104,21 @@ public class SturdyBarbarianEnchantment extends Enchantment {
         if (event.phase == TickEvent.Phase.END && event.player != null) {
             // 检查玩家是否穿着有磐蛮附魔的胸甲
             ItemStack chestplate = event.player.getItemBySlot(EquipmentSlot.CHEST);
-            int sturdyBarbarianLevel = chestplate.getEnchantmentLevel(ModEnchantments.STURDY_BARBARIAN.get());
+            // 修复空指针异常：检查物品是否为空
+            int sturdyBarbarianLevel = 0;
+            if (!chestplate.isEmpty()) {
+                sturdyBarbarianLevel = chestplate.getEnchantmentLevel(ModEnchantments.STURDY_BARBARIAN.get());
+            }
 
             if (sturdyBarbarianLevel > 0) {
                 updateDamageModifier(event.player);
             } else {
                 // 如果没有附魔，移除修饰符
-                event.player.getAttributes().getInstance(Attributes.ATTACK_DAMAGE).removeModifier(DAMAGE_MODIFIER_UUID);
+                var attributes = event.player.getAttributes();
+                var damageAttribute = attributes.getInstance(Attributes.ATTACK_DAMAGE);
+                if (damageAttribute != null) {
+                    damageAttribute.removeModifier(DAMAGE_MODIFIER_UUID);
+                }
             }
         }
     }

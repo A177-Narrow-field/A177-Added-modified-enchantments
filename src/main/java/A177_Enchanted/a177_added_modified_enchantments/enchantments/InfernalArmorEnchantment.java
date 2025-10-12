@@ -124,9 +124,9 @@ public class InfernalArmorEnchantment extends Enchantment {
             long currentTime = world.getGameTime();
             long lastTime = lastFireTimeMap.getOrDefault(player, 0L);
             int interval = switch (level) {
-                case 1 -> 40; // 2秒 (20 ticks/秒)
-                case 2 -> 20; // 1秒
-                default -> 10; // 0.5秒 (三级)
+                case 1 -> 60; // 3秒
+                case 2 -> 40; // 2秒
+                default -> 20; // 1秒
             };
             
             if (currentTime - lastTime >= interval) {
@@ -190,7 +190,7 @@ public class InfernalArmorEnchantment extends Enchantment {
                 // 击退效果
                 living.knockback(0.6, player.getX() - living.getX(), player.getZ() - living.getZ());
 
-                living.hurt(player.damageSources().playerAttack(player), 4.0F);// 造成4点伤害
+                living.hurt(player.damageSources().playerAttack(player), 2.0F);// 造成2点伤害
 
                 living.setSecondsOnFire(burnTime);// 点燃敌人
             }
@@ -205,9 +205,9 @@ public class InfernalArmorEnchantment extends Enchantment {
         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.INFERNAL_ARMOR.get(), chestplate);
         if (level <= 0) return;
         
-        // 检查伤害是否超过生命值5%
+        // 检查伤害是否超过生命值30%
         float maxHealth = player.getMaxHealth();
-        if (event.getAmount() > maxHealth * 0.05f) {
+        if (event.getAmount() > maxHealth * 0.3f) {
             Entity attacker = event.getSource().getEntity();
             if (attacker instanceof LivingEntity livingAttacker) {
                 // 伤害返还倍数 (1/2/3倍)

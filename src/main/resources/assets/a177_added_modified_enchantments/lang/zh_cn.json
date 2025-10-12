@@ -183,7 +183,6 @@
   "enchantment.a177_added_modified_enchantments.resistance_continuation": "§5抗性续效",
   "enchantment.a177_added_modified_enchantments.focused_steadiness": "§5专注稳重",
   "enchantment.a177_added_modified_enchantments.night_vision": "§a夜朦",
-  "enchantment.a177_added_modified_enchantments.carrot_night_vision": "§5食补夜视",
   "enchantment.a177_added_modified_enchantments.staggering_blow": "§c顿挫",
   "enchantment.a177_added_modified_enchantments.crash_landing": "§c坠机",
   "enchantment.a177_added_modified_enchantments.headhunter": "§l§6弑魁",
@@ -230,6 +229,9 @@
   "enchantment.a177_added_modified_enchantments.stone_pellet_man": "§6石粒人",
   "enchantment.a177_added_modified_enchantments.lightburn_walker": "§6光灼行者",
   "enchantment.a177_added_modified_enchantments.ore_detector": "§6矿探",
+  "enchantment.a177_added_modified_enchantments.chieftain": "§5匪首",
+  "enchantment.a177_added_modified_enchantments.vampire": "§6吸血鬼",
+  "enchantment.a177_added_modified_enchantments.horse_boots": "§5策马靴",
   "block.a177_added_modified_enchantments.cloud_block": "云块",
   "block.a177_added_modified_enchantments.hardened_lava_block": "硬熔岩",
   "entity.a177_added_modified_enchantments.ore_highlight": " "

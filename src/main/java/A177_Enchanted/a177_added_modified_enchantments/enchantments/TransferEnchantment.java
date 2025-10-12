@@ -1,5 +1,6 @@
 package A177_Enchanted.a177_added_modified_enchantments.enchantments;
 
+import A177_Enchanted.a177_added_modified_enchantments.init.ModEnchantments;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -90,6 +91,15 @@ public class TransferEnchantment extends Enchantment {
         if (event.getProjectile() instanceof AbstractArrow arrow && !arrow.level().isClientSide) {
             // 检查箭是否由玩家射出
             if (arrow.getOwner() instanceof Player shooter) {
+                // 获取射击者主手的物品（弓或弩）
+                ItemStack weaponItem = shooter.getMainHandItem();
+                
+                // 检查武器是否具有传输附魔
+                if (weaponItem.isEmpty() || weaponItem.getEnchantmentLevel(ModEnchantments.TRANSFER.get()) <= 0) {
+                    // 如果武器为空或没有传输附魔，则不执行传输操作
+                    return;
+                }
+                
                 // 获取射击者副手的物品
                 ItemStack offhandItem = shooter.getOffhandItem();
                 

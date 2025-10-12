@@ -7,6 +7,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -18,6 +20,8 @@ import A177_Enchanted.a177_added_modified_enchantments.config.AllEnchantmentsCon
 public class BurningTraumaEnchantment extends Enchantment {
     // 每级伤害增加百分比 (20%)
     private static final double DAMAGE_BONUS_PER_LEVEL = 0.2;
+    // 虚弱效果持续时间（单位：tick，20 tick = 1秒）
+    private static final int WEAKNESS_DURATION = 120; // 6秒
 
     public BurningTraumaEnchantment() {
         super(Rarity.UNCOMMON, EnchantmentCategory.WEAPON, new EquipmentSlot[]{EquipmentSlot.MAINHAND});
@@ -85,6 +89,10 @@ public class BurningTraumaEnchantment extends Enchantment {
                     // 增加伤害（每级增加20%伤害）
                     float additionalDamage = event.getAmount() * (float) (DAMAGE_BONUS_PER_LEVEL * level);
                     event.setAmount(event.getAmount() + additionalDamage);
+                    
+                    // 添加虚弱效果，等级随附魔等级增加
+                    // 虚弱等级从0开始，所以level-1
+                    target.addEffect(new MobEffectInstance(MobEffects.WEAKNESS, WEAKNESS_DURATION, level - 1));
                 }
             }
         }
