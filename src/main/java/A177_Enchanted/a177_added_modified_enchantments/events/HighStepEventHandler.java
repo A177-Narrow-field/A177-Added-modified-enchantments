@@ -3,10 +3,12 @@ package A177_Enchanted.a177_added_modified_enchantments.events;
 import A177_Enchanted.a177_added_modified_enchantments.init.ModEnchantments;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.event.entity.EntityMountEvent;
 import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -25,10 +27,33 @@ public class HighStepEventHandler {
     private static final double STEP_HEIGHT_PER_LEVEL = 0.5;
     private static final double MAX_STEP_HEIGHT = 10.0;
     private static final double HEADROOM_CHECK_HEIGHT = 1.0;
+    // 策马靴附魔的跨越高度加成
+    private static final double HORSE_BOOTS_STEP_HEIGHT_PER_LEVEL = 1.0;
 
     @SubscribeEvent
     public static void onLivingUpdate(LivingEvent.LivingTickEvent event) {
         Entity entity = event.getEntity();
+
+        // 处理被玩家骑乘的实体
+        if (!entity.level().isClientSide() && entity.getControllingPassenger() instanceof Player) {
+            LivingEntity livingEntity = (LivingEntity) entity;
+            Player player = (Player) livingEntity.getControllingPassenger();
+            
+            // 检查玩家是否拥有策马靴附魔
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            int horseBootsLevel = boots.getEnchantmentLevel(ModEnchantments.HORSE_BOOTS.get());
+            
+            if (horseBootsLevel > 0) {
+                // 应用策马靴的跨越高度加成
+                double newStepHeight = Math.min(BASE_STEP_HEIGHT + (horseBootsLevel * HORSE_BOOTS_STEP_HEIGHT_PER_LEVEL), MAX_STEP_HEIGHT);
+                livingEntity.setMaxUpStep((float) newStepHeight);
+            } else {
+                // 重置为默认跨越高度
+                livingEntity.setMaxUpStep((float) BASE_STEP_HEIGHT);
+            }
+            
+            return; // 如果是被骑乘的实体，不需要处理其他逻辑
+        }
 
         if (!(entity instanceof Player player)) {
             return;
@@ -68,6 +93,30 @@ public class HighStepEventHandler {
                 (event.getSlot() == EquipmentSlot.FEET || event.getSlot() == EquipmentSlot.LEGS)) {
             // 立即更新玩家的跨越高度
             updatePlayerStepHeightImmediately(player);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onEntityMount(EntityMountEvent event) {
+        // 当实体被骑乘或取消骑乘时更新跨越高度
+        if (event.getEntityMounting() instanceof Player && event.getEntityBeingMounted() instanceof LivingEntity) {
+            LivingEntity mount = (LivingEntity) event.getEntityBeingMounted();
+            Player player = (Player) event.getEntityMounting();
+            
+            if (event.isMounting()) {
+                // 开始骑乘
+                ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+                int horseBootsLevel = boots.getEnchantmentLevel(ModEnchantments.HORSE_BOOTS.get());
+                
+                if (horseBootsLevel > 0) {
+                    // 应用策马靴的跨越高度加成
+                    double newStepHeight = Math.min(BASE_STEP_HEIGHT + (horseBootsLevel * HORSE_BOOTS_STEP_HEIGHT_PER_LEVEL), MAX_STEP_HEIGHT);
+                    mount.setMaxUpStep((float) newStepHeight);
+                }
+            } else {
+                // 停止骑乘，重置为默认跨越高度
+                mount.setMaxUpStep((float) BASE_STEP_HEIGHT);
+            }
         }
     }
 

@@ -18,6 +18,9 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber
 public class VampireEnchantment extends Enchantment {
+    // 添加计数器，用于控制燃烧效果的触发频率
+    private static int tickCounter = 0;
+    
     // 获取配置
     private static AllEnchantmentsConfig.EnchantConfig getConfig() {
         return AllEnchantmentsConfig.ENCHANTMENTS.get("vampire");
@@ -110,6 +113,13 @@ public class VampireEnchantment extends Enchantment {
         if (player.level().isClientSide) {
             return;
         }
+
+        // 每20tick检查一次，减少触发频率
+        tickCounter++;
+        if (tickCounter < 20) {
+            return;
+        }
+        tickCounter = 0;
 
         // 检查玩家是否拥有吸血鬼附魔
         ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);

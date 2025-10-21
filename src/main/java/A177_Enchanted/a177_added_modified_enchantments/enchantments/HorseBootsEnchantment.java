@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -74,7 +75,7 @@ public class HorseBootsEnchantment extends Enchantment {
             
             if (enchantmentLevel > 0) {
                 // 每级增加60%速度
-                double speedMultiplier = 0.6 * enchantmentLevel;
+                double speedMultiplier = 0.60 * enchantmentLevel;
                 
                 // 移除旧的速度修饰符（如果存在）
                 entity.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED)
@@ -99,6 +100,26 @@ public class HorseBootsEnchantment extends Enchantment {
             // 如果没有被玩家骑乘，移除速度加成
             entity.getAttribute(net.minecraft.world.entity.ai.attributes.Attributes.MOVEMENT_SPEED)
                 .removeModifier(SPEED_MODIFIER_UUID);
+        }
+    }
+    
+    @SubscribeEvent
+    public static void onLivingFall(LivingFallEvent event) {
+        LivingEntity entity = event.getEntity();
+        
+        // 检查实体是否被玩家骑乘
+        Entity passenger = entity.getControllingPassenger();
+        if (passenger instanceof Player) {
+            Player player = (Player) passenger;
+            
+            // 检查玩家是否拥有策马靴附魔
+            ItemStack boots = player.getItemBySlot(EquipmentSlot.FEET);
+            int enchantmentLevel = boots.getEnchantmentLevel(ModEnchantments.HORSE_BOOTS.get());
+            
+            // 如果有附魔，则完全免疫摔落伤害
+            if (enchantmentLevel > 0) {
+                event.setCanceled(true);
+            }
         }
     }
 }

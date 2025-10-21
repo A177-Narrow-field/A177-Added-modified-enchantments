@@ -19,6 +19,7 @@ import net.minecraftforge.event.ItemAttributeModifierEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -124,24 +125,27 @@ public class StonePelletManEnchantment extends Enchantment {
         }
     }
     
-    // 击败生物事件
+    // 玩家攻击事件
     @SubscribeEvent
-    public static void onLivingDeath(LivingDeathEvent event) {
-        if (event.getSource().getEntity() instanceof Player player) {
-            // 获取玩家装备的胸甲
-            ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
-            int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.STONE_PELLET_MAN.get(), chestplate);
+    public static void onPlayerAttack(AttackEntityEvent event) {
+        Player player = event.getEntity();
+        
+        // 获取玩家装备的胸甲
+        ItemStack chestplate = player.getItemBySlot(EquipmentSlot.CHEST);
+        int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.STONE_PELLET_MAN.get(), chestplate);
+        
+        if (level > 0) {
+            // 10%概率回复10%血量
+            if (Math.random() < 0.1) {
+                // 回复10%血量
+                float maxHealth = player.getMaxHealth();
+                player.heal(maxHealth * 0.1f);
+            }
             
-            if (level > 0) {
-                // 10%概率获得幸运10持续12秒并回复10%血量
-                if (Math.random() < 0.1) {
-                    // 给予幸运10效果，持续12秒（240 ticks）
-                    player.addEffect(new MobEffectInstance(MobEffects.LUCK, 240, 9)); // 等级9 = 幸运10
-                    
-                    // 回复10%血量
-                    float maxHealth = player.getMaxHealth();
-                    player.heal(maxHealth * 0.1f);
-                }
+            // 5%概率获得幸运效果
+            if (Math.random() < 0.05) {
+                // 给予幸运10效果，持续12秒（240 ticks）
+                player.addEffect(new MobEffectInstance(MobEffects.LUCK, 240, 9)); // 等级9 = 幸运10
             }
         }
     }
