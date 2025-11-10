@@ -546,9 +546,9 @@ public class AllEnchantmentsConfig {
                 false, true, true);
         ENCHANTMENTS.put("spring_fist_chestplate", SPRING_FIST_CHESTPLATE);
         
-        // 钻耀拳甲：是宝藏，可发现，不可交易
+        // 钻耀拳甲：是宝藏，不可发现，不可交易
         DIAMOND_OBSIDIAN_FIST_CHESTPLATE = createEnchantConfig("diamond_obsidian_fist_chestplate", "钻耀拳甲", 
-                true, true, false);
+                true, false, false);
         ENCHANTMENTS.put("diamond_obsidian_fist_chestplate", DIAMOND_OBSIDIAN_FIST_CHESTPLATE);
         
         // 直拳拳甲：不是宝藏，可发现，可交易

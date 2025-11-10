@@ -106,7 +106,7 @@ public class SweepingStrikeEnchantment extends Enchantment {
                 
                 // 应用连击伤害加成
                 if (comboCount > 0) {
-                    float damageIncrease = comboCount * 0.2f; // 每层+20%伤害
+                    float damageIncrease = comboCount * 0.05f; // 每层+5%伤害
                     float newDamage = event.getAmount() * (1.0f + damageIncrease);
                     event.setAmount(newDamage);
                 }

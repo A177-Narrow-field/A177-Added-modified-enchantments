@@ -135,8 +135,8 @@ public class StonePelletManEnchantment extends Enchantment {
         int level = EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.STONE_PELLET_MAN.get(), chestplate);
         
         if (level > 0) {
-            // 10%概率回复10%血量
-            if (Math.random() < 0.1) {
+            // 5%概率回复10%血量
+            if (Math.random() < 0.05) {
                 // 回复10%血量
                 float maxHealth = player.getMaxHealth();
                 player.heal(maxHealth * 0.1f);

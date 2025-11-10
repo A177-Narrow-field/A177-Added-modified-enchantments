@@ -75,7 +75,6 @@ public class SwiftFeastEnchantment extends Enchantment {
             ItemStack helmet = player.getItemBySlot(EquipmentSlot.HEAD);
             if (helmet.isEnchanted() && helmet.getEnchantmentLevel(ModEnchantments.SWIFT_FEAST.get()) > 0) {
                 int level = helmet.getEnchantmentLevel(ModEnchantments.SWIFT_FEAST.get());
-                // 每级增加60%食用速度
                 // 等级越高，每次减少的持续时间越多，食用速度越快
                 event.setDuration(event.getDuration() - Math.max(1, (int)(level * 1.2)));
             }

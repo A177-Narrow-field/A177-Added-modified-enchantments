@@ -133,9 +133,21 @@ public class StealthHunterEnchantment extends Enchantment {
             return; // 只在服务端运行
         }
 
-        // 检查玩家是否持有带有匿猎附魔的武器
-        ItemStack weapon = player.getMainHandItem();
-        int level = weapon.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+        // 检查玩家背包内是否有带有匿猎附魔的物品
+        int level = 0;
+        for (ItemStack stack : player.getInventory().items) {
+            if (stack.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get()) > 0) {
+                level = stack.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+                break;
+            }
+        }
+        // 也检查副手
+        if (level <= 0) {
+            ItemStack offhand = player.getOffhandItem();
+            if (offhand.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get()) > 0) {
+                level = offhand.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+            }
+        }
 
         UUID playerUUID = player.getUUID();
         long currentTime = player.level().getGameTime();
@@ -174,6 +186,17 @@ public class StealthHunterEnchantment extends Enchantment {
                 // 检查是否在冷却时间内
                 boolean isOnCooldown = isOnCooldown(player);
                 if (!isOnCooldown) {
+                    // 创造模式玩家不需要消耗经验值
+                    if (!player.isCreative()) {
+                        // 检查玩家是否有足够的经验值（10点经验）
+                        if (player.totalExperience < 10) {
+                            return;
+                        }
+
+                        // 消耗8点经验值
+                        player.giveExperiencePoints(-10);
+                    }
+                    
                     // 触发隐身效果
                     triggerInvisibility(player, currentTime);
                     // 清除蹲下时间记录，需要重新蹲下才能再次触发
@@ -291,9 +314,21 @@ public class StealthHunterEnchantment extends Enchantment {
         // 当玩家造成伤害时，应用额外伤害并移除隐身效果
         DamageSource source = event.getSource();
         if (source.getEntity() instanceof Player player) {
-            // 检查玩家是否持有带有匿猎附魔的武器
-            ItemStack weapon = player.getMainHandItem();
-            int level = weapon.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+            // 检查玩家背包内是否有带有匿猎附魔的物品
+            int level = 0;
+            for (ItemStack stack : player.getInventory().items) {
+                if (stack.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get()) > 0) {
+                    level = stack.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+                    break;
+                }
+            }
+            // 也检查副手
+            if (level <= 0) {
+                ItemStack offhand = player.getOffhandItem();
+                if (offhand.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get()) > 0) {
+                    level = offhand.getEnchantmentLevel(ModEnchantments.STEALTH_HUNTER.get());
+                }
+            }
 
             if (level <= 0) {
                 return;

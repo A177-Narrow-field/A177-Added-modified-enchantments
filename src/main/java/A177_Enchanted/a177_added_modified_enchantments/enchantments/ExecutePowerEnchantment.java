@@ -26,7 +26,7 @@ public class ExecutePowerEnchantment extends Enchantment {
     private static final int EXECUTION_CHECK_INTERVAL = 10;
     
     public ExecutePowerEnchantment() {
-        super(Rarity.RARE, EnchantmentCategory.DIGGER, new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
+        super(Rarity.RARE, EnchantmentCategory.create("HOE", (item) -> item instanceof HoeItem), new EquipmentSlot[]{EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND});
     }
 
     @Override

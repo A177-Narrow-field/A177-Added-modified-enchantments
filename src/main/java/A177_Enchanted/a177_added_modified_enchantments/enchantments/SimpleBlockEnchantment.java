@@ -29,8 +29,8 @@ public class SimpleBlockEnchantment extends Enchantment {
     // 缓存玩家的附魔等级
     private static final Map<UUID, Integer> PLAYER_ENCHANTMENT_CACHE = new HashMap<>();
     
-    // 基础格挡概率 (30%)
-    private static final double BASE_BLOCK_CHANCE = 0.3;
+    // 基础格挡概率 (20%)
+    private static final double BASE_BLOCK_CHANCE = 0.2;
     
     // 每级格挡概率提升 (15%)
     private static final double BLOCK_CHANCE_PER_LEVEL = 0.15;

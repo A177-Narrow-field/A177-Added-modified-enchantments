@@ -53,8 +53,8 @@ import java.util.WeakHashMap;
 
 @Mod.EventBusSubscriber
 public class ArmySummonEnchantment extends Enchantment {
-    // 冷却时间（tick）- 10秒
-    private static final int COOLDOWN_TIME = 200;
+    // 冷却时间（tick）- 21秒
+    private static final int COOLDOWN_TIME = 430;
     // 召唤生物存活时间（tick）- 20秒
     private static final int DESPAWN_TIME = 400;
     // 每级召唤的生物数量
@@ -150,6 +150,17 @@ public class ArmySummonEnchantment extends Enchantment {
         if (cooldownEndTime != null && currentTime < cooldownEndTime) {
             // 仍在冷却中
             return;
+        }
+
+        // 创造模式玩家不需要消耗经验值
+        if (!player.isCreative()) {
+            // 检查玩家是否有足够的经验值（15点经验）
+            if (player.totalExperience < 15) {
+                return;
+            }
+
+            // 消耗30点经验值
+            player.giveExperiencePoints(-30);
         }
 
         // 设置冷却时间
@@ -259,7 +270,7 @@ public class ArmySummonEnchantment extends Enchantment {
         // 召唤生物
         for (int i = 0; i < count; i++) {
             // 默认召唤生物类型
-            EntityType<? extends Mob> entityType = EntityType.LLAMA;
+            EntityType<? extends Mob> entityType = EntityType.WOLF;
             
             // 检查头盔附魔类型并确定召唤生物（每个生物独立计算概率）
             if (EnchantmentHelper.getItemEnchantmentLevel(ModEnchantments.COMMANDER.get(), helmet) > 0) {
